@@ -105,24 +105,27 @@ body {
     }
 }
 
-/* 縦向きモバイル - より大きな表示領域を確保 */
+/* 縦向きモバイル - 横幅基準でアスペクト比保持 */
 @media (max-width: 768px) and (orientation: portrait) {
     .game-container {
-        /* 縦画面でより大きなゲーム領域を確保 */
-        height: 80vh;
+        /* 画面幅に合わせてアスペクト比4:3で高さを計算、最大90vhに制限 */
+        width: 100vw;
+        height: min(75vw, 90vh); /* 100vw * (3/4) = 75vw、ただし最大90vh */
         top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
     
     #gameCanvas {
-        /* 縦画面では横長のゲームをより大きく表示 */
-        height: 80vh;
+        /* 画面幅基準でアスペクト比を保持、最大90vhに制限 */
         width: 100vw;
+        height: min(75vw, 90vh);
         object-fit: contain;
     }
     
     .touch-controls {
-        bottom: 8vh;
+        /* 画面下から固定距離に配置 */
+        bottom: 5vh;
         right: 5vw;
     }
     
@@ -133,23 +136,23 @@ body {
     }
 }
 
-/* 横向きモバイル - ステータスバー+URL表示領域を考慮 */
+/* 横向きモバイル - 画面下部切れを防ぐ */
 @media (max-width: 768px) and (orientation: landscape) {
     .game-container {
-        /* ステータスバー+URL表示分を考慮してより小さく */
-        height: 75vh;
+        /* 画面下部10%が見えない問題を考慮してさらに縮小 */
+        height: 60vh;
         top: 50%;
         transform: translateY(-50%);
     }
     
     #gameCanvas {
-        height: 75vh;
+        height: 60vh;
         width: 100vw;
         object-fit: contain;
     }
     
     .touch-controls {
-        bottom: 8vh;
+        bottom: 15vh;
         right: 3vw;
     }
     
