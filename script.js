@@ -131,12 +131,13 @@ class InputHandler {
             }
         } else if (gameState === GameState.INSTRUCTIONS) {
             // Check if start game button is clicked (responsive)
-            const isMobileInst = window.innerWidth <= 768 || window.innerHeight > window.innerWidth || 
+            const isMobileInst = window.innerWidth <= 768 || 
                                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isPortraitInst = window.innerHeight > window.innerWidth;
             const buttonWidth = isMobileInst ? canvas.width * 0.6 : canvas.width * 0.19;
-            const buttonHeight = isMobileInst ? canvas.height * 0.1 : canvas.height * 0.12;
+            const buttonHeight = isMobileInst ? canvas.height * 0.08 : canvas.height * 0.12;
             const buttonX = canvas.width / 2 - buttonWidth / 2;
-            const buttonY = canvas.height * 0.83;
+            const buttonY = canvas.height * (isPortraitInst && isMobileInst ? 0.85 : 0.83);
             
             if (x >= buttonX && x <= buttonX + buttonWidth && y >= buttonY && y <= buttonY + buttonHeight) {
                 startGame();
@@ -646,48 +647,63 @@ class UI {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        ctx.fillStyle = '#fff';
-        ctx.font = `${Math.max(24, canvas.height * 0.06)}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.fillText('遊び方', canvas.width / 2, canvas.height * 0.13);
+        // 画面向きを検出
+        const isMobile = window.innerWidth <= 768 || 
+                        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isPortrait = window.innerHeight > window.innerWidth;
         
-        ctx.font = `${Math.max(14, canvas.height * 0.033)}px Arial`;
+        ctx.fillStyle = '#fff';
+        ctx.font = `${Math.max(20, canvas.height * (isPortrait && isMobile ? 0.04 : 0.06))}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText('遊び方', canvas.width / 2, canvas.height * (isPortrait && isMobile ? 0.08 : 0.13));
+        
+        ctx.font = `${Math.max(12, canvas.height * (isPortrait && isMobile ? 0.025 : 0.033))}px Arial`;
         ctx.textAlign = 'left';
         
         const leftMargin = canvas.width * 0.063;
         const indentMargin = canvas.width * 0.088;
+        const lineSpacing = isPortrait && isMobile ? 0.035 : 0.05;
+        let currentY = isPortrait && isMobile ? 0.15 : 0.23;
         
         // PC controls
-        ctx.fillText('【PC操作】', leftMargin, canvas.height * 0.23);
-        ctx.fillText('• 矢印キー: 自機移動', indentMargin, canvas.height * 0.28);
-        ctx.fillText('• スペースキー: 攻撃', indentMargin, canvas.height * 0.33);
+        ctx.fillText('【PC操作】', leftMargin, canvas.height * currentY);
+        currentY += lineSpacing;
+        ctx.fillText('• 矢印キー: 自機移動', indentMargin, canvas.height * currentY);
+        currentY += lineSpacing;
+        ctx.fillText('• スペースキー: 攻撃', indentMargin, canvas.height * currentY);
+        currentY += lineSpacing * 1.5;
         
         // Mobile controls
-        ctx.fillText('【モバイル操作】', leftMargin, canvas.height * 0.42);
-        ctx.fillText('• 画面タッチ&ドラッグ: 自機移動', indentMargin, canvas.height * 0.47);
-        ctx.fillText('• 画面タップ: 攻撃', indentMargin, canvas.height * 0.52);
-        ctx.fillText('• 画面長押し: 連続攻撃', indentMargin, canvas.height * 0.57);
+        ctx.fillText('【モバイル操作】', leftMargin, canvas.height * currentY);
+        currentY += lineSpacing;
+        ctx.fillText('• 画面タッチ&ドラッグ: 自機移動', indentMargin, canvas.height * currentY);
+        currentY += lineSpacing;
+        ctx.fillText('• 画面タップ: 攻撃', indentMargin, canvas.height * currentY);
+        currentY += lineSpacing;
+        ctx.fillText('• 画面長押し: 連続攻撃', indentMargin, canvas.height * currentY);
+        currentY += lineSpacing * 1.5;
         
         // Game rules
-        ctx.fillText('【ゲームルール】', leftMargin, canvas.height * 0.62);
-        ctx.fillText('• 30秒間敵を倒し続けるとボス出現', indentMargin, canvas.height * 0.67);
-        ctx.fillText('• ボスを倒すとステージクリア', indentMargin, canvas.height * 0.72);
-        ctx.fillText('• 全3ステージをクリアでゲームクリア', indentMargin, canvas.height * 0.77);
+        ctx.fillText('【ゲームルール】', leftMargin, canvas.height * currentY);
+        currentY += lineSpacing;
+        ctx.fillText('• 30秒間敵を倒し続けるとボス出現', indentMargin, canvas.height * currentY);
+        currentY += lineSpacing;
+        ctx.fillText('• ボスを倒すとステージクリア', indentMargin, canvas.height * currentY);
+        currentY += lineSpacing;
+        ctx.fillText('• 全3ステージをクリアでゲームクリア', indentMargin, canvas.height * currentY);
         
         // Start button (responsive)
-        const isMobileInst = window.innerWidth <= 768 || window.innerHeight > window.innerWidth || 
-                           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const buttonWidth = isMobileInst ? canvas.width * 0.6 : canvas.width * 0.19;
-        const buttonHeight = isMobileInst ? canvas.height * 0.1 : canvas.height * 0.12;
+        const buttonWidth = isMobile ? canvas.width * 0.6 : canvas.width * 0.19;
+        const buttonHeight = isMobile ? canvas.height * 0.08 : canvas.height * 0.12;
         const buttonX = canvas.width / 2 - buttonWidth / 2;
-        const buttonY = canvas.height * 0.83;
+        const buttonY = canvas.height * (isPortrait && isMobile ? 0.85 : 0.83);
         
         ctx.fillStyle = '#00ff00';
         ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = `${Math.max(16, canvas.height * 0.033)}px Arial`;
+        ctx.font = `${Math.max(14, canvas.height * (isPortrait && isMobile ? 0.025 : 0.033))}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('ゲーム開始', canvas.width / 2, buttonY + buttonHeight / 2 + 5);
+        ctx.fillText('ゲーム開始', canvas.width / 2, buttonY + buttonHeight / 2 + 4);
     }
 
     renderGameUI() {
