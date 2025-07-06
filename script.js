@@ -103,11 +103,12 @@ class InputHandler {
 
     handleClick(x, y) {
         if (gameState === GameState.TITLE) {
-            // Check if start button is clicked (responsive)
-            const buttonWidth = canvas.width * 0.4;
-            const buttonHeight = canvas.height * 0.1;
+            // Check if start button is clicked (responsive for PC and mobile)
+            const isMobile = canvas.width < canvas.height || canvas.width <= 768;
+            const buttonWidth = isMobile ? canvas.width * 0.5 : canvas.width * 0.3;
+            const buttonHeight = isMobile ? canvas.height * 0.12 : canvas.height * 0.08;
             const buttonX = canvas.width / 2 - buttonWidth / 2;
-            const buttonY = canvas.height * 0.7;
+            const buttonY = isMobile ? canvas.height * 0.65 : canvas.height * 0.8;
             
             if (x >= buttonX && x <= buttonX + buttonWidth && y >= buttonY && y <= buttonY + buttonHeight) {
                 gameState = GameState.INSTRUCTIONS;
@@ -550,26 +551,41 @@ class UI {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw start image (responsive size, smaller for mobile)
+        // Check if mobile (canvas width/height ratio suggests mobile layout)
+        const isMobile = canvas.width < canvas.height || canvas.width <= 768;
+        
+        // Draw start image (different sizes for PC and mobile)
         if (startImage.complete) {
-            const maxImgSize = Math.min(canvas.width * 0.6, canvas.height * 0.45);
+            let maxImgSize, imgY, buttonY;
+            
+            if (isMobile) {
+                // Mobile: smaller image, higher position
+                maxImgSize = Math.min(canvas.width * 0.55, canvas.height * 0.35);
+                imgY = canvas.height * 0.05;
+                buttonY = canvas.height * 0.65;
+            } else {
+                // PC: larger image, original positioning
+                maxImgSize = Math.min(canvas.width * 0.7, canvas.height * 0.6);
+                imgY = canvas.height * 0.1;
+                buttonY = canvas.height * 0.8;
+            }
+            
             const imgWidth = maxImgSize;
             const imgHeight = maxImgSize;
             const imgX = canvas.width / 2 - imgWidth / 2;
-            const imgY = canvas.height * 0.05;
             ctx.drawImage(startImage, imgX, imgY, imgWidth, imgHeight);
         }
         
-        // Draw start button below the image (more space for mobile)
-        const buttonWidth = canvas.width * 0.4;
-        const buttonHeight = canvas.height * 0.1;
+        // Draw start button (different sizes for PC and mobile)
+        const buttonWidth = isMobile ? canvas.width * 0.5 : canvas.width * 0.3;
+        const buttonHeight = isMobile ? canvas.height * 0.12 : canvas.height * 0.08;
         const buttonX = canvas.width / 2 - buttonWidth / 2;
-        const buttonY = canvas.height * 0.7;
+        const buttonY = isMobile ? canvas.height * 0.65 : canvas.height * 0.8;
         
         ctx.fillStyle = '#00ff00';
         ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = `${Math.max(18, canvas.height * 0.04)}px Arial`;
+        ctx.font = `${Math.max(16, canvas.height * (isMobile ? 0.045 : 0.03))}px Arial`;
         ctx.textAlign = 'center';
         ctx.fillText('START', canvas.width / 2, buttonY + buttonHeight / 2 + 8);
     }
