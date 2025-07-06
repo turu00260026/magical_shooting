@@ -104,10 +104,10 @@ class InputHandler {
     handleClick(x, y) {
         if (gameState === GameState.TITLE) {
             // Check if start button is clicked (responsive)
-            const buttonWidth = canvas.width * 0.3;
-            const buttonHeight = canvas.height * 0.08;
+            const buttonWidth = canvas.width * 0.4;
+            const buttonHeight = canvas.height * 0.1;
             const buttonX = canvas.width / 2 - buttonWidth / 2;
-            const buttonY = canvas.height * 0.8;
+            const buttonY = canvas.height * 0.7;
             
             if (x >= buttonX && x <= buttonX + buttonWidth && y >= buttonY && y <= buttonY + buttonHeight) {
                 gameState = GameState.INSTRUCTIONS;
@@ -550,28 +550,28 @@ class UI {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw start image (responsive size)
+        // Draw start image (responsive size, smaller for mobile)
         if (startImage.complete) {
-            const maxImgSize = Math.min(canvas.width * 0.7, canvas.height * 0.6);
+            const maxImgSize = Math.min(canvas.width * 0.6, canvas.height * 0.45);
             const imgWidth = maxImgSize;
             const imgHeight = maxImgSize;
             const imgX = canvas.width / 2 - imgWidth / 2;
-            const imgY = canvas.height * 0.1;
+            const imgY = canvas.height * 0.05;
             ctx.drawImage(startImage, imgX, imgY, imgWidth, imgHeight);
         }
         
-        // Draw start button below the image (responsive position)
-        const buttonWidth = canvas.width * 0.3;
-        const buttonHeight = canvas.height * 0.08;
+        // Draw start button below the image (more space for mobile)
+        const buttonWidth = canvas.width * 0.4;
+        const buttonHeight = canvas.height * 0.1;
         const buttonX = canvas.width / 2 - buttonWidth / 2;
-        const buttonY = canvas.height * 0.8;
+        const buttonY = canvas.height * 0.7;
         
         ctx.fillStyle = '#00ff00';
         ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = `${Math.max(16, canvas.height * 0.03)}px Arial`;
+        ctx.font = `${Math.max(18, canvas.height * 0.04)}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('START', canvas.width / 2, buttonY + buttonHeight / 2 + 5);
+        ctx.fillText('START', canvas.width / 2, buttonY + buttonHeight / 2 + 8);
     }
 
     renderInstructions() {
@@ -961,6 +961,14 @@ function gameLoop(currentTime = 0) {
     
     // Render UI
     ui.render();
+    
+    // Control touch controls visibility
+    const touchControls = document.getElementById('touchControls');
+    if (gameState === GameState.PLAYING || gameState === GameState.BOSS) {
+        touchControls.classList.remove('hidden');
+    } else {
+        touchControls.classList.add('hidden');
+    }
     
     requestAnimationFrame(gameLoop);
 }
