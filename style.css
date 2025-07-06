@@ -74,11 +74,17 @@ body {
         margin: 0;
         padding: 0;
         overflow: hidden;
+        /* ブラウザURL表示を隠すためのスタイル */
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
     }
     
     .game-container {
         width: 100vw;
+        /* ブラウザのURL表示領域を考慮 */
         height: 100vh;
+        height: calc(100vh - env(safe-area-inset-top));
         border: none;
         border-radius: 0;
         position: fixed;
@@ -89,6 +95,7 @@ body {
     #gameCanvas {
         width: 100vw;
         height: 100vh;
+        height: calc(100vh - env(safe-area-inset-top));
         object-fit: contain;
         background-color: #001122;
     }
@@ -98,31 +105,58 @@ body {
     }
 }
 
-/* 縦向きモバイル */
+/* 縦向きモバイル - 横向きゲームとして最適化 */
 @media (max-width: 768px) and (orientation: portrait) {
+    .game-container {
+        /* 縦画面でもゲーム領域を確保 */
+        height: 60vh;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    #gameCanvas {
+        /* 縦画面では横長のゲームを中央に配置 */
+        height: 60vh;
+        width: 100vw;
+        object-fit: contain;
+    }
+    
     .touch-controls {
-        bottom: 5vh;
+        bottom: 15vh;
         right: 5vw;
     }
     
     .shoot-button {
-        width: 15vw;
-        height: 15vw;
-        font-size: 3vw;
+        width: 12vw;
+        height: 12vw;
+        font-size: 2.5vw;
     }
 }
 
-/* 横向きモバイル */
+/* 横向きモバイル - URL表示領域を考慮 */
 @media (max-width: 768px) and (orientation: landscape) {
+    .game-container {
+        /* URL表示分を考慮してゲーム領域を調整 */
+        height: 85vh;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    #gameCanvas {
+        height: 85vh;
+        width: 100vw;
+        object-fit: contain;
+    }
+    
     .touch-controls {
-        bottom: 2vh;
-        right: 2vw;
+        bottom: 5vh;
+        right: 3vw;
     }
     
     .shoot-button {
-        width: 8vh;
-        height: 8vh;
-        font-size: 2vh;
+        width: 6vh;
+        height: 6vh;
+        font-size: 1.5vh;
     }
 }
 

@@ -111,9 +111,9 @@ class InputHandler {
             
             let buttonWidth, buttonHeight, buttonY;
             if (isMobile && isPortrait) {
-                buttonWidth = canvas.width * 0.8;
-                buttonHeight = canvas.height * 0.12;
-                buttonY = canvas.height * 0.45;
+                buttonWidth = canvas.width * 0.6;
+                buttonHeight = canvas.height * 0.1;
+                buttonY = canvas.height * 0.6;
             } else if (isMobile && isLandscape) {
                 buttonWidth = canvas.width * 0.5;
                 buttonHeight = canvas.height * 0.2;
@@ -580,10 +580,10 @@ class UI {
             let maxImgSize, imgY, buttonY;
             
             if (isMobile && isPortrait) {
-                // Mobile Portrait: smaller image, higher position
-                maxImgSize = Math.min(canvas.width * 0.6, canvas.height * 0.25);
-                imgY = canvas.height * 0.05;
-                buttonY = canvas.height * 0.45;
+                // Mobile Portrait: 横長ゲームを縦画面に最適化
+                maxImgSize = Math.min(canvas.width * 0.5, canvas.height * 0.3);
+                imgY = canvas.height * 0.1;
+                buttonY = canvas.height * 0.6;
             } else if (isMobile && isLandscape) {
                 // Mobile Landscape: smaller image, higher position
                 maxImgSize = Math.min(canvas.width * 0.3, canvas.height * 0.4);
@@ -605,10 +605,10 @@ class UI {
         // Draw start button (optimized for orientation)
         let buttonWidth, buttonHeight, buttonY;
         if (isMobile && isPortrait) {
-            // Mobile Portrait: large button
-            buttonWidth = canvas.width * 0.8;
-            buttonHeight = canvas.height * 0.12;
-            buttonY = canvas.height * 0.45;
+            // Mobile Portrait: 縦画面用に調整
+            buttonWidth = canvas.width * 0.6;
+            buttonHeight = canvas.height * 0.1;
+            buttonY = canvas.height * 0.6;
         } else if (isMobile && isLandscape) {
             // Mobile Landscape: wide button
             buttonWidth = canvas.width * 0.5;
