@@ -103,32 +103,61 @@ class InputHandler {
 
     handleClick(x, y) {
         if (gameState === GameState.TITLE) {
-            // Check if start button is clicked
-            if (x >= 325 && x <= 475 && y >= 480 && y <= 550) {
+            // Check if start button is clicked (responsive)
+            const buttonWidth = canvas.width * 0.3;
+            const buttonHeight = canvas.height * 0.08;
+            const buttonX = canvas.width / 2 - buttonWidth / 2;
+            const buttonY = canvas.height * 0.8;
+            
+            if (x >= buttonX && x <= buttonX + buttonWidth && y >= buttonY && y <= buttonY + buttonHeight) {
                 gameState = GameState.INSTRUCTIONS;
             }
         } else if (gameState === GameState.INSTRUCTIONS) {
-            // Check if start game button is clicked
-            if (x >= 325 && x <= 475 && y >= 500 && y <= 570) {
+            // Check if start game button is clicked (responsive)
+            const buttonWidth = canvas.width * 0.19;
+            const buttonHeight = canvas.height * 0.12;
+            const buttonX = canvas.width / 2 - buttonWidth / 2;
+            const buttonY = canvas.height * 0.83;
+            
+            if (x >= buttonX && x <= buttonX + buttonWidth && y >= buttonY && y <= buttonY + buttonHeight) {
                 startGame();
             }
         } else if (gameState === GameState.STAGE_CLEAR) {
-            // Check if next stage button is clicked
-            if (x >= 220 && x <= 400 && y >= 400 && y <= 470) {
+            // Check if next stage button is clicked (responsive)
+            const button1Width = canvas.width * 0.225;
+            const buttonHeight = canvas.height * 0.12;
+            const button1X = canvas.width * 0.275;
+            const buttonY = canvas.height * 0.67;
+            
+            if (x >= button1X && x <= button1X + button1Width && y >= buttonY && y <= buttonY + buttonHeight) {
                 nextStage();
             }
-            // Check if return to start button is clicked
-            if (x >= 420 && x <= 580 && y >= 400 && y <= 470) {
+            
+            // Check if return to start button is clicked (responsive)
+            const button2Width = canvas.width * 0.2;
+            const button2X = canvas.width * 0.525;
+            
+            if (x >= button2X && x <= button2X + button2Width && y >= buttonY && y <= buttonY + buttonHeight) {
                 restartGame();
             }
         } else if (gameState === GameState.GAME_CLEAR) {
-            // Check if restart button is clicked (game clear screen)
-            if (x >= 325 && x <= 475 && y >= 500 && y <= 570) {
+            // Check if restart button is clicked (game clear screen) (responsive)
+            const buttonWidth = canvas.width * 0.19;
+            const buttonHeight = canvas.height * 0.12;
+            const buttonX = canvas.width / 2 - buttonWidth / 2;
+            const buttonY = canvas.height * 0.83;
+            
+            if (x >= buttonX && x <= buttonX + buttonWidth && y >= buttonY && y <= buttonY + buttonHeight) {
                 restartGame();
             }
         } else if (gameState === GameState.GAME_OVER) {
-            // Check if restart button is clicked (game over screen)
-            if (x >= 325 && x <= 475 && y >= 400 && y <= 470) {
+            // Check if restart button is clicked (game over screen) (responsive)
+            const buttonWidth = canvas.width * 0.19;
+            const buttonHeight = canvas.height * 0.12;
+            const buttonX = canvas.width / 2 - buttonWidth / 2;
+            const buttonY = canvas.height * 0.67;
+            
+            if (x >= buttonX && x <= buttonX + buttonWidth && y >= buttonY && y <= buttonY + buttonHeight) {
                 restartGame();
             }
         } else if (gameState === GameState.PLAYING || gameState === GameState.BOSS) {
@@ -521,22 +550,28 @@ class UI {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw start image (adjusted size to fit screen)
+        // Draw start image (responsive size)
         if (startImage.complete) {
-            const imgWidth = 400;
-            const imgHeight = 400;
+            const maxImgSize = Math.min(canvas.width * 0.7, canvas.height * 0.6);
+            const imgWidth = maxImgSize;
+            const imgHeight = maxImgSize;
             const imgX = canvas.width / 2 - imgWidth / 2;
-            const imgY = 50;
+            const imgY = canvas.height * 0.1;
             ctx.drawImage(startImage, imgX, imgY, imgWidth, imgHeight);
         }
         
-        // Draw start button below the image
+        // Draw start button below the image (responsive position)
+        const buttonWidth = canvas.width * 0.3;
+        const buttonHeight = canvas.height * 0.08;
+        const buttonX = canvas.width / 2 - buttonWidth / 2;
+        const buttonY = canvas.height * 0.8;
+        
         ctx.fillStyle = '#00ff00';
-        ctx.fillRect(325, 480, 150, 70);
+        ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = '20px Arial';
+        ctx.font = `${Math.max(16, canvas.height * 0.03)}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('START', 400, 525);
+        ctx.fillText('START', canvas.width / 2, buttonY + buttonHeight / 2 + 5);
     }
 
     renderInstructions() {
@@ -544,37 +579,45 @@ class UI {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         ctx.fillStyle = '#fff';
-        ctx.font = '36px Arial';
+        ctx.font = `${Math.max(24, canvas.height * 0.06)}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('遊び方', canvas.width / 2, 80);
+        ctx.fillText('遊び方', canvas.width / 2, canvas.height * 0.13);
         
-        ctx.font = '20px Arial';
+        ctx.font = `${Math.max(14, canvas.height * 0.033)}px Arial`;
         ctx.textAlign = 'left';
         
+        const leftMargin = canvas.width * 0.063;
+        const indentMargin = canvas.width * 0.088;
+        
         // PC controls
-        ctx.fillText('【PC操作】', 50, 140);
-        ctx.fillText('• 矢印キー: 自機移動', 70, 170);
-        ctx.fillText('• スペースキー: 攻撃', 70, 200);
+        ctx.fillText('【PC操作】', leftMargin, canvas.height * 0.23);
+        ctx.fillText('• 矢印キー: 自機移動', indentMargin, canvas.height * 0.28);
+        ctx.fillText('• スペースキー: 攻撃', indentMargin, canvas.height * 0.33);
         
         // Mobile controls
-        ctx.fillText('【モバイル操作】', 50, 250);
-        ctx.fillText('• 画面タッチ&ドラッグ: 自機移動', 70, 280);
-        ctx.fillText('• 画面タップ: 攻撃', 70, 310);
-        ctx.fillText('• 画面長押し: 連続攻撃', 70, 340);
+        ctx.fillText('【モバイル操作】', leftMargin, canvas.height * 0.42);
+        ctx.fillText('• 画面タッチ&ドラッグ: 自機移動', indentMargin, canvas.height * 0.47);
+        ctx.fillText('• 画面タップ: 攻撃', indentMargin, canvas.height * 0.52);
+        ctx.fillText('• 画面長押し: 連続攻撃', indentMargin, canvas.height * 0.57);
         
         // Game rules
-        ctx.fillText('【ゲームルール】', 50, 370);
-        ctx.fillText('• 30秒間敵を倒し続けるとボス出現', 70, 400);
-        ctx.fillText('• ボスを倒すとステージクリア', 70, 430);
-        ctx.fillText('• 全3ステージをクリアでゲームクリア', 70, 460);
+        ctx.fillText('【ゲームルール】', leftMargin, canvas.height * 0.62);
+        ctx.fillText('• 30秒間敵を倒し続けるとボス出現', indentMargin, canvas.height * 0.67);
+        ctx.fillText('• ボスを倒すとステージクリア', indentMargin, canvas.height * 0.72);
+        ctx.fillText('• 全3ステージをクリアでゲームクリア', indentMargin, canvas.height * 0.77);
         
-        // Start button
+        // Start button (responsive)
+        const buttonWidth = canvas.width * 0.19;
+        const buttonHeight = canvas.height * 0.12;
+        const buttonX = canvas.width / 2 - buttonWidth / 2;
+        const buttonY = canvas.height * 0.83;
+        
         ctx.fillStyle = '#00ff00';
-        ctx.fillRect(325, 500, 150, 70);
+        ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = '20px Arial';
+        ctx.font = `${Math.max(16, canvas.height * 0.033)}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('ゲーム開始', 400, 545);
+        ctx.fillText('ゲーム開始', canvas.width / 2, buttonY + buttonHeight / 2 + 5);
     }
 
     renderGameUI() {
@@ -624,49 +667,57 @@ class UI {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         ctx.fillStyle = '#fff';
-        ctx.font = '36px Arial';
+        ctx.font = `${Math.max(24, canvas.height * 0.06)}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText(`第${currentStage}ステージクリア`, canvas.width / 2, 200);
+        ctx.fillText(`第${currentStage}ステージクリア`, canvas.width / 2, canvas.height * 0.33);
         
         // Special congratulations message for stage 3
         if (currentStage === 3) {
-            ctx.font = '28px Arial';
-            ctx.fillText('🎉おめでとうございます🎉', canvas.width / 2, 250);
-            ctx.font = '24px Arial';
-            ctx.fillText('全ステージクリア！', canvas.width / 2, 290);
+            ctx.font = `${Math.max(20, canvas.height * 0.047)}px Arial`;
+            ctx.fillText('🎉おめでとうございます🎉', canvas.width / 2, canvas.height * 0.42);
+            ctx.font = `${Math.max(18, canvas.height * 0.04)}px Arial`;
+            ctx.fillText('全ステージクリア！', canvas.width / 2, canvas.height * 0.48);
         } else {
-            ctx.fillText('おめでとう！', canvas.width / 2, 250);
+            ctx.fillText('おめでとう！', canvas.width / 2, canvas.height * 0.42);
         }
         
-        // Next stage button
+        // Next stage button (responsive)
+        const button1Width = canvas.width * 0.225;
+        const buttonHeight = canvas.height * 0.12;
+        const button1X = canvas.width * 0.275;
+        const buttonY = canvas.height * 0.67;
+        
         ctx.fillStyle = '#00ff00';
-        ctx.fillRect(220, 400, 180, 70);
+        ctx.fillRect(button1X, buttonY, button1Width, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = '16px Arial';
+        ctx.font = `${Math.max(14, canvas.height * 0.027)}px Arial`;
         if (currentStage === 1) {
-            ctx.fillText('第２ステージにすすむ', 310, 445);
+            ctx.fillText('第２ステージにすすむ', button1X + button1Width / 2, buttonY + buttonHeight / 2 + 5);
         } else if (currentStage === 2) {
-            ctx.fillText('第３ステージにすすむ', 310, 445);
+            ctx.fillText('第３ステージにすすむ', button1X + button1Width / 2, buttonY + buttonHeight / 2 + 5);
         } else if (currentStage === 3) {
-            ctx.fillText('エンディングへ', 310, 445);
+            ctx.fillText('エンディングへ', button1X + button1Width / 2, buttonY + buttonHeight / 2 + 5);
         }
         
-        // Return to start button
+        // Return to start button (responsive)
+        const button2Width = canvas.width * 0.2;
+        const button2X = canvas.width * 0.525;
+        
         ctx.fillStyle = '#ff6600';
-        ctx.fillRect(420, 400, 160, 70);
+        ctx.fillRect(button2X, buttonY, button2Width, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = '16px Arial';
-        ctx.fillText('スタートに戻る', 500, 445);
+        ctx.font = `${Math.max(14, canvas.height * 0.027)}px Arial`;
+        ctx.fillText('スタートに戻る', button2X + button2Width / 2, buttonY + buttonHeight / 2 + 5);
     }
 
     renderGameClear() {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw omedeto image (maintaining aspect ratio)
+        // Draw omedeto image (responsive sizing)
         if (omedetoImage.complete) {
-            const maxWidth = 400;
-            const maxHeight = 250;
+            const maxWidth = canvas.width * 0.5;
+            const maxHeight = canvas.height * 0.42;
             const imageAspectRatio = omedetoImage.width / omedetoImage.height;
             
             let displayWidth = maxWidth;
@@ -679,24 +730,29 @@ class UI {
             }
             
             const imgX = canvas.width / 2 - displayWidth / 2;
-            const imgY = 50;
+            const imgY = canvas.height * 0.083;
             ctx.drawImage(omedetoImage, imgX, imgY, displayWidth, displayHeight);
         }
         
         ctx.fillStyle = '#fff';
-        ctx.font = '48px Arial';
+        ctx.font = `${Math.max(32, canvas.height * 0.08)}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('GAME CLEAR!', canvas.width / 2, 400);
+        ctx.fillText('GAME CLEAR!', canvas.width / 2, canvas.height * 0.67);
         
-        ctx.font = '24px Arial';
-        ctx.fillText(`Final Score: ${score}`, canvas.width / 2, 450);
+        ctx.font = `${Math.max(18, canvas.height * 0.04)}px Arial`;
+        ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height * 0.75);
         
-        // Restart button
+        // Restart button (responsive)
+        const buttonWidth = canvas.width * 0.19;
+        const buttonHeight = canvas.height * 0.12;
+        const buttonX = canvas.width / 2 - buttonWidth / 2;
+        const buttonY = canvas.height * 0.83;
+        
         ctx.fillStyle = '#00ff00';
-        ctx.fillRect(325, 500, 150, 70);
+        ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = '18px Arial';
-        ctx.fillText('スタートに戻る', 400, 545);
+        ctx.font = `${Math.max(16, canvas.height * 0.03)}px Arial`;
+        ctx.fillText('スタートに戻る', canvas.width / 2, buttonY + buttonHeight / 2 + 5);
     }
 
     renderGameOver() {
@@ -704,19 +760,24 @@ class UI {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         ctx.fillStyle = '#fff';
-        ctx.font = '48px Arial';
+        ctx.font = `${Math.max(32, canvas.height * 0.08)}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText('GAME OVER', canvas.width / 2, 200);
+        ctx.fillText('GAME OVER', canvas.width / 2, canvas.height * 0.33);
         
-        ctx.font = '24px Arial';
-        ctx.fillText(`Final Score: ${score}`, canvas.width / 2, 300);
+        ctx.font = `${Math.max(18, canvas.height * 0.04)}px Arial`;
+        ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height * 0.5);
         
-        // Restart button
+        // Restart button (responsive)
+        const buttonWidth = canvas.width * 0.19;
+        const buttonHeight = canvas.height * 0.12;
+        const buttonX = canvas.width / 2 - buttonWidth / 2;
+        const buttonY = canvas.height * 0.67;
+        
         ctx.fillStyle = '#00ff00';
-        ctx.fillRect(325, 400, 150, 70);
+        ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = '18px Arial';
-        ctx.fillText('スタートに戻る', 400, 445);
+        ctx.font = `${Math.max(16, canvas.height * 0.03)}px Arial`;
+        ctx.fillText('スタートに戻る', canvas.width / 2, buttonY + buttonHeight / 2 + 5);
     }
 }
 
