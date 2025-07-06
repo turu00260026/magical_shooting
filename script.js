@@ -103,21 +103,38 @@ class InputHandler {
 
     handleClick(x, y) {
         if (gameState === GameState.TITLE) {
-            // Check if start button is clicked (responsive for PC and mobile)
-            const isMobile = window.innerWidth <= 768 || window.innerHeight > window.innerWidth || 
+            // Check if start button is clicked (orientation-aware)
+            const isMobile = window.innerWidth <= 768 || 
                             /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const buttonWidth = isMobile ? canvas.width * 0.5 : canvas.width * 0.3;
-            const buttonHeight = isMobile ? canvas.height * 0.12 : canvas.height * 0.08;
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const isLandscape = window.innerWidth > window.innerHeight;
+            
+            let buttonWidth, buttonHeight, buttonY;
+            if (isMobile && isPortrait) {
+                buttonWidth = canvas.width * 0.8;
+                buttonHeight = canvas.height * 0.12;
+                buttonY = canvas.height * 0.45;
+            } else if (isMobile && isLandscape) {
+                buttonWidth = canvas.width * 0.5;
+                buttonHeight = canvas.height * 0.2;
+                buttonY = canvas.height * 0.65;
+            } else {
+                buttonWidth = canvas.width * 0.3;
+                buttonHeight = canvas.height * 0.08;
+                buttonY = canvas.height * 0.8;
+            }
+            
             const buttonX = canvas.width / 2 - buttonWidth / 2;
-            const buttonY = isMobile ? canvas.height * 0.45 : canvas.height * 0.8;
             
             if (x >= buttonX && x <= buttonX + buttonWidth && y >= buttonY && y <= buttonY + buttonHeight) {
                 gameState = GameState.INSTRUCTIONS;
             }
         } else if (gameState === GameState.INSTRUCTIONS) {
             // Check if start game button is clicked (responsive)
-            const buttonWidth = canvas.width * 0.19;
-            const buttonHeight = canvas.height * 0.12;
+            const isMobileInst = window.innerWidth <= 768 || window.innerHeight > window.innerWidth || 
+                               /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const buttonWidth = isMobileInst ? canvas.width * 0.6 : canvas.width * 0.19;
+            const buttonHeight = isMobileInst ? canvas.height * 0.1 : canvas.height * 0.12;
             const buttonX = canvas.width / 2 - buttonWidth / 2;
             const buttonY = canvas.height * 0.83;
             
@@ -552,25 +569,26 @@ class UI {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Check if mobile using window size and user agent
-        const isMobile = window.innerWidth <= 768 || window.innerHeight > window.innerWidth || 
+        // Check device type and orientation
+        const isMobile = window.innerWidth <= 768 || 
                         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const isLandscape = window.innerWidth > window.innerHeight;
         
-        // Debug: show mobile detection info once (remove this later)
-        if (gameState === GameState.TITLE && !window.debugShown) {
-            window.debugShown = true;
-            alert(`Mobile: ${isMobile}\nWindow: ${window.innerWidth}x${window.innerHeight}\nCanvas: ${canvas.width}x${canvas.height}`);
-        }
-        
-        // Draw start image (different sizes for PC and mobile)
+        // Draw start image (optimized for orientation)
         if (startImage.complete) {
             let maxImgSize, imgY, buttonY;
             
-            if (isMobile) {
-                // Mobile: smaller image, much higher position
-                maxImgSize = Math.min(canvas.width * 0.45, canvas.height * 0.25);
-                imgY = canvas.height * 0.02;
+            if (isMobile && isPortrait) {
+                // Mobile Portrait: smaller image, higher position
+                maxImgSize = Math.min(canvas.width * 0.6, canvas.height * 0.25);
+                imgY = canvas.height * 0.05;
                 buttonY = canvas.height * 0.45;
+            } else if (isMobile && isLandscape) {
+                // Mobile Landscape: smaller image, higher position
+                maxImgSize = Math.min(canvas.width * 0.3, canvas.height * 0.4);
+                imgY = canvas.height * 0.05;
+                buttonY = canvas.height * 0.65;
             } else {
                 // PC: larger image, original positioning
                 maxImgSize = Math.min(canvas.width * 0.7, canvas.height * 0.6);
@@ -584,16 +602,42 @@ class UI {
             ctx.drawImage(startImage, imgX, imgY, imgWidth, imgHeight);
         }
         
-        // Draw start button (different sizes for PC and mobile)
-        const buttonWidth = isMobile ? canvas.width * 0.5 : canvas.width * 0.3;
-        const buttonHeight = isMobile ? canvas.height * 0.12 : canvas.height * 0.08;
+        // Draw start button (optimized for orientation)
+        let buttonWidth, buttonHeight, buttonY;
+        if (isMobile && isPortrait) {
+            // Mobile Portrait: large button
+            buttonWidth = canvas.width * 0.8;
+            buttonHeight = canvas.height * 0.12;
+            buttonY = canvas.height * 0.45;
+        } else if (isMobile && isLandscape) {
+            // Mobile Landscape: wide button
+            buttonWidth = canvas.width * 0.5;
+            buttonHeight = canvas.height * 0.2;
+            buttonY = canvas.height * 0.65;
+        } else {
+            // PC: normal button
+            buttonWidth = canvas.width * 0.3;
+            buttonHeight = canvas.height * 0.08;
+            buttonY = canvas.height * 0.8;
+        }
+        
         const buttonX = canvas.width / 2 - buttonWidth / 2;
-        const buttonY = isMobile ? canvas.height * 0.45 : canvas.height * 0.8;
         
         ctx.fillStyle = '#00ff00';
         ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
         ctx.fillStyle = '#000';
-        ctx.font = `${Math.max(16, canvas.height * (isMobile ? 0.045 : 0.03))}px Arial`;
+        
+        // Font size based on orientation
+        let fontSize;
+        if (isMobile && isPortrait) {
+            fontSize = Math.max(24, canvas.height * 0.06);
+        } else if (isMobile && isLandscape) {
+            fontSize = Math.max(20, canvas.height * 0.08);
+        } else {
+            fontSize = Math.max(16, canvas.height * 0.03);
+        }
+        
+        ctx.font = `${fontSize}px Arial`;
         ctx.textAlign = 'center';
         ctx.fillText('START', canvas.width / 2, buttonY + buttonHeight / 2 + 8);
     }
@@ -631,8 +675,10 @@ class UI {
         ctx.fillText('• 全3ステージをクリアでゲームクリア', indentMargin, canvas.height * 0.77);
         
         // Start button (responsive)
-        const buttonWidth = canvas.width * 0.19;
-        const buttonHeight = canvas.height * 0.12;
+        const isMobileInst = window.innerWidth <= 768 || window.innerHeight > window.innerWidth || 
+                           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const buttonWidth = isMobileInst ? canvas.width * 0.6 : canvas.width * 0.19;
+        const buttonHeight = isMobileInst ? canvas.height * 0.1 : canvas.height * 0.12;
         const buttonX = canvas.width / 2 - buttonWidth / 2;
         const buttonY = canvas.height * 0.83;
         
